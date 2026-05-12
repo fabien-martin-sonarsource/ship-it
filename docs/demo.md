@@ -12,23 +12,23 @@ Once it's done, create a commit and push your branch.
 
 ### Make a PR
 
-```powershell
-
+```bash
 git checkout feature/read-only-administration
 
-gh pr create --base demo --title "Add read-only administration page for scenarios" --body @"
+gh pr create --base main --title "Add read-only administration page for scenarios" --body "$(cat <<'EOF'
 ## Summary
-- Add ``GET /admin/scenarios`` protected by HTTP Basic Authentication (role ``ADMIN``)
-- Add Spring Security configuration restricting ``/admin/**`` to authenticated admins
+- Add \`GET /admin/scenarios\` protected by HTTP Basic Authentication (role \`ADMIN\`)
+- Add Spring Security configuration restricting \`/admin/**\` to authenticated admins
 - Add Thymeleaf template displaying the full scenario list in a table
-- Public route ``/`` remains accessible without authentication
+- Public route \`/\` remains accessible without authentication
 
 ## Test plan
-- [ ] ``GET /admin/scenarios`` returns ``401`` without credentials
-- [ ] ``GET /admin/scenarios`` returns ``200`` with admin credentials
-- [ ] ``GET /admin/scenarios`` returns ``403`` with non-admin user
-- [ ] ``GET /`` remains publicly accessible
-"@
+- [ ] \`GET /admin/scenarios\` returns \`401\` without credentials
+- [ ] \`GET /admin/scenarios\` returns \`200\` with admin credentials
+- [ ] \`GET /admin/scenarios\` returns \`403\` with non-admin user
+- [ ] \`GET /\` remains publicly accessible
+EOF
+)"
 ```
 
 ## MCP Server

@@ -1,6 +1,6 @@
 # Ship It?
 
-[![AI Code Assurance](https://sonar.beenotice.com/api/project_badges/ai_code_assurance?project=beeNotice_ship-it_c906d80a-4d85-4318-81db-ec8563e8c48b&token=sqb_744df8094eb2eabb89a23582bbc651be347ee2ab)](https://sonar.beenotice.com/dashboard?id=beeNotice_ship-it_c906d80a-4d85-4318-81db-ec8563e8c48b)
+[![AI Code Assurance](https://sonarcloud.io/api/project_badges/ai_code_assurance?project=fabien-martin-sonarsource_ship-it)](https://sonarcloud.io/summary/new_code?id=fabien-martin-sonarsource_ship-it)
 
 An interactive demo app that puts you in the shoes of a developer making real-world decisions about code quality, security, and engineering practices.
 
@@ -65,16 +65,8 @@ SONARQUBE_URL=https://sonar.beenotice.com
 
 **2. Load the env file before starting Claude:**
 
-PowerShell:
-```powershell
-Get-Content private/.env | ForEach-Object {
-    $parts = $_ -split '=', 2
-    [System.Environment]::SetEnvironmentVariable($parts[0], $parts[1])
-}
-claude
-
-What are the sonarqube issues on the PR ?
-
+```bash
+export $(cat private/.env | xargs) && claude
 ```
 
 
