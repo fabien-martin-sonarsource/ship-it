@@ -34,6 +34,24 @@ SonarCloud's automatic analysis does not run tests, so code coverage won't be re
 
 The `pom.xml` already includes JaCoCo and the required Sonar properties. See the [SonarCloud CI guide](https://docs.sonarsource.com/sonarcloud/advanced-setup/ci-based-analysis/sonarscanner-for-maven/) for setup instructions.
 
+### GitHub Actions setup
+
+The workflow (`.github/workflows/main.yml`) requires one **secret** and three **variables** configured in your GitHub repository (*Settings > Secrets and variables > Actions*).
+
+**Secret** (`Settings > Secrets and variables > Actions > Secrets`):
+
+| Name | Description |
+|------|-------------|
+| `SONAR_TOKEN` | SonarQube/SonarCloud authentication token |
+
+**Variables** (`Settings > Secrets and variables > Actions > Variables`):
+
+| Name | Example value                       | Description |
+|------|-------------------------------------|-------------|
+| `SONAR_HOST_URL` | `https://sonarcloud.io`             | URL of your SonarQube instance |
+| `SONAR_ORGANIZATION` | `fabien-martin-sonarsource`         | SonarCloud organization key |
+| `SONAR_PROJECT_KEY` | `fabien-martin-sonarsource_ship-it` | Project key shown in SonarQube |
+
 ### MCP to connect SonarQube Server
 
 The MCP server is configured at the project level via `.mcp.json` — no global installation needed.
