@@ -5,7 +5,7 @@
 ### Code generation
 
 ```
-Create a new branch starting from demo named feature/read-only-administration 
+Create a new branch starting from main named feature/read-only-administration 
 On this branch implement the feature defined in docs/prompt.md
 Once it's done, create a commit and push your branch.
 ```
