@@ -2,7 +2,7 @@ package com.beenotice.demo.domain.service;
 
 import com.beenotice.demo.domain.model.Decision;
 import com.beenotice.demo.domain.model.SanityCheck;
-import com.beenotice.demo.domain.spi.SanityCheckInventory;
+import com.beenotice.demo.infrastructure.repository.InMemorySanityCheckInventory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,7 +18,10 @@ import static org.mockito.Mockito.when;
 class SanityCheckRunnerImplTest {
 
     @Mock
-    private SanityCheckInventory sanityCheckInventory;
+    private InMemorySanityCheckInventory sanityCheckInventory;
+
+    @Mock
+    private CsvSanityCheckExporter csvExporter;
 
     @InjectMocks
     private SanityCheckRunnerImpl runner;
