@@ -40,29 +40,20 @@ Add a "Surprise me" endpoint that returns a random sanity check from the deck, w
 
 ## Technical Design
 
-### Feature package layout
-
-To improve discoverability and locality, group every class related to the random pick feature under a single new package `application.random`. This package contains:
-
-- The use case (e.g. `PickRandomSanityCheck`).
-- The `@Controller` that exposes `GET /random`.
-- Any helper or feature-specific view model used to render the banner.
-
-Organize files inside `application.random` by feature, not by technical role — the goal is that a newcomer opening the package finds everything needed to understand the feature without jumping across the codebase.
-
 ### Use Case
 
-Place the use case in `application.random`.
+Add a new use case `PickRandomSanityCheck` in the `application` package.
 
-- The use case must expose the picked check, its position in the deck and the deck size, so the banner can be rendered.
 - Inject a `RandomGenerator` so that tests can drive the random source with a fixed seed.
+- To keep the controller as a thin pass-through, the use case must return a **fully populated, view-ready result** containing both the sanity check ready to be displayed and the banner text.
+- For consistency with the existing home page, **reuse the `SanityCheckView` already used by `GuiController`** rather than introducing yet another mapping class.
 
-### Entry point
+### Controller
 
-Place the `@Controller` in `application.random`.
+Add a `@Controller` in `infrastructure/controller`:
 
-- `GET /random` invokes the random pick use case and passes the result to the Thymeleaf template.
-- The banner text must be available to the template under a model attribute (e.g., `bannerText`).
+- `GET /random` invokes the random pick use case.
+- The controller forwards the use case result to the Thymeleaf template without additional mapping.
 
 ### View
 
@@ -74,7 +65,6 @@ Reuse `templates/sanity-check.html`. Add a conditional block (Thymeleaf `th:if`)
 ### Architecture constraints
 
 - Follow the existing package structure: `domain`, `application`, `infrastructure`.
-- For this feature, group all random-pick code in `application.random` to keep the feature self-contained.
 - Do not modify the domain model or the `SanityCheckInventory` SPI.
 - All Sonar architecture rules must remain green.
 
