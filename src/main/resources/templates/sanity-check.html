@@ -32,7 +32,7 @@
                 <p class="context-text" th:text="${sanityCheck.context}"></p>
             </div>
             <div>
-                <span class="eyebrow">Decision</span>
+                <span class="eyebrow" th:text="${bannerText} ?: 'Decision'"></span>
                 <p class="question-text" th:text="${sanityCheck.question}"></p>
             </div>
         </div>
