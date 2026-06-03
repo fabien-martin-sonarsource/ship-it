@@ -6,7 +6,7 @@
 
 ```
 Create a new branch starting from main named feature/read-only-administration 
-On this branch implement the feature defined in docs/prompt.md
+On this branch implement the feature defined in docs/prompt-admin.md
 Once it's done, create a commit and push your branch.
 ```
 
