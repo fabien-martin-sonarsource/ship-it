@@ -1,12 +1,12 @@
 package com.beenotice.demo.infrastructure.controller;
 
-import com.beenotice.demo.domain.api.SanityCheckRunner;
+import com.beenotice.demo.application.PickSanityCheck;
 import com.beenotice.demo.domain.model.Decision;
 import com.beenotice.demo.domain.model.SanityCheck;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.when;
@@ -20,11 +20,11 @@ class GuiControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private SanityCheckRunner sanityCheckRunner;
+    private PickSanityCheck pickSanityCheck;
 
     @Test
     void root_returnsSanityCheckView() throws Exception {
-        when(sanityCheckRunner.getCheckAt(0)).thenReturn(anyCheck());
+        when(pickSanityCheck.atPosition(0)).thenReturn(anyCheck());
 
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
@@ -33,9 +33,17 @@ class GuiControllerTest {
     }
 
     @Test
+    void root_exposesViewDtoNotDomainModel() throws Exception {
+        when(pickSanityCheck.atPosition(0)).thenReturn(anyCheck());
+
+        mockMvc.perform(get("/"))
+                .andExpect(model().attribute("sanityCheck", org.hamcrest.Matchers.instanceOf(SanityCheckView.class)));
+    }
+
+    @Test
     void root_incrementsCheckIndex() throws Exception {
-        when(sanityCheckRunner.getCheckAt(0)).thenReturn(anyCheck());
-        when(sanityCheckRunner.getCheckAt(1)).thenReturn(anyCheck());
+        when(pickSanityCheck.atPosition(0)).thenReturn(anyCheck());
+        when(pickSanityCheck.atPosition(1)).thenReturn(anyCheck());
 
         mockMvc.perform(get("/"))
                 .andExpect(model().attribute("checkIndex", 1));

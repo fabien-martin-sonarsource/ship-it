@@ -1,4 +1,4 @@
-package com.beenotice.demo.domain.service;
+package com.beenotice.demo.application;
 
 import com.beenotice.demo.domain.model.Decision;
 import com.beenotice.demo.domain.model.SanityCheck;
@@ -15,32 +15,32 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class SanityCheckRunnerImplTest {
+class PickSanityCheckTest {
 
     @Mock
-    private SanityCheckInventory sanityCheckInventory;
+    private SanityCheckInventory inventory;
 
     @InjectMocks
-    private SanityCheckRunnerImpl runner;
+    private PickSanityCheck pickSanityCheck;
 
     @Test
-    void getCheckAt_returnsCheckAtIndex() {
+    void atPosition_returnsCheckAtIndex() {
         SanityCheck first = check("first");
         SanityCheck second = check("second");
-        when(sanityCheckInventory.findAll()).thenReturn(List.of(first, second));
+        when(inventory.findAll()).thenReturn(List.of(first, second));
 
-        assertThat(runner.getCheckAt(0)).isEqualTo(first);
-        assertThat(runner.getCheckAt(1)).isEqualTo(second);
+        assertThat(pickSanityCheck.atPosition(0)).isEqualTo(first);
+        assertThat(pickSanityCheck.atPosition(1)).isEqualTo(second);
     }
 
     @Test
-    void getCheckAt_wrapsAroundWithModulo() {
+    void atPosition_wrapsAround() {
         SanityCheck only = check("only");
-        when(sanityCheckInventory.findAll()).thenReturn(List.of(only));
+        when(inventory.findAll()).thenReturn(List.of(only));
 
-        assertThat(runner.getCheckAt(0)).isEqualTo(only);
-        assertThat(runner.getCheckAt(1)).isEqualTo(only);
-        assertThat(runner.getCheckAt(42)).isEqualTo(only);
+        assertThat(pickSanityCheck.atPosition(0)).isEqualTo(only);
+        assertThat(pickSanityCheck.atPosition(1)).isEqualTo(only);
+        assertThat(pickSanityCheck.atPosition(42)).isEqualTo(only);
     }
 
     private SanityCheck check(String name) {
