@@ -3,8 +3,8 @@ spring:
     name: ship-it
   security:
     user:
-      name: admin
-      password: '{noop}changeme'
+      name: ${ADMIN_USERNAME}
+      password: ${ADMIN_PASSWORD}
       roles: ADMIN
 app:
   sanity-checks-path: classpath:data/sanity-checks.json
