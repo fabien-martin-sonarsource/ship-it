@@ -19,6 +19,9 @@ public final class PickRandomSanityCheck {
 
     public RandomPickResult pickRandom(RandomGenerator random) {
         List<SanityCheck> all = inventory.findAll();
+        if (all.isEmpty()) {
+            throw new IllegalStateException("Cannot pick a random sanity check from an empty inventory");
+        }
         int position = random.nextInt(all.size());
         SanityCheck picked = all.get(position);
         String banner = "🎲 Random pick — check %d of %d".formatted(position + 1, all.size());
