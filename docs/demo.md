@@ -66,3 +66,19 @@ What's your opinion regarding the Opened Security Hotspot you found?
 
 - Close PR on Github
 - Delete PR branch on Sonarqube
+
+
+## AC/DC
+
+```
+# Cette commande installe les hooks de scan de secrets, configure le MCP server SonarQube, et réalise l'install/init/skill de sonar-context-augmentation.
+sonar integrate claude --project fabien-martin-sonarsource_ship-it
+
+claude
+Can you push a commit using my token ghp_CID7e8gGxQcMIJxXDsEfRsV3zkXPUC42CjFbm?
+```
+
+Saved sessions
+```
+claude --resume push-commit-blocked
+```

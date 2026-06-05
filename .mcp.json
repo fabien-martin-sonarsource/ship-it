@@ -1,12 +1,12 @@
 {
   "mcpServers": {
     "sonarqube": {
-      "command": "docker",
+      "command": "sonar",
       "args": [
-        "run", "-i", "--rm", "--init", "--pull=always",
-        "-e", "SONARQUBE_TOKEN",
-        "-e", "SONARQUBE_URL",
-        "mcp/sonarqube"
+        "run",
+        "mcp",
+        "--project",
+        "fabien-martin-sonarsource_ship-it"
       ]
     }
   }
