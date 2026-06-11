@@ -1,5 +1,10 @@
 spring:
   application:
     name: ship-it
+  security:
+    user:
+      name: admin
+      password: admin
+      roles: ADMIN
 app:
   sanity-checks-path: classpath:data/sanity-checks.json

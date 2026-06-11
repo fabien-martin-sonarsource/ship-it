@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ship It? — Scenario Administration</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 2rem; color: #1a1a1a; }
+        h1 { margin-bottom: 1rem; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 0.6rem 0.8rem; text-align: left; vertical-align: top; }
+        th { background: #f4f4f4; }
+        tr:nth-child(even) { background: #fafafa; }
+        .meta { color: #555; margin-bottom: 1.5rem; }
+    </style>
+</head>
+<body>
+    <h1>Scenario Administration</h1>
+    <p class="meta">
+        Total scenarios:
+        <strong th:text="${#lists.size(scenarios)}">0</strong>
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Context</th>
+                <th>Question</th>
+                <th>Option A</th>
+                <th>Option B</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="scenario, iter : ${scenarios}">
+                <td th:text="${iter.count}">1</td>
+                <td th:text="${scenario.context}">Context</td>
+                <td th:text="${scenario.question}">Question?</td>
+                <td th:text="${scenario.optionA.label}">Option A</td>
+                <td th:text="${scenario.optionB.label}">Option B</td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(scenarios)}">
+                <td colspan="5">No scenarios loaded.</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
