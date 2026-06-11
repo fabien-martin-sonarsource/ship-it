@@ -2,4 +2,4 @@
 if ! command -v sonar &> /dev/null; then
   exit 0
 fi
-sonar hook claude-post-tool-use --project fabien-martin-sonarsource_ship-it
+sonar hook claude-post-tool-use --project 'fabien-martin-sonarsource_ship-it'

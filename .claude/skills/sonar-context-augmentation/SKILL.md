@@ -4,7 +4,7 @@ description: >-
   ALWAYS invoke this skill on the first prompt, whether you are the Agent or an Explore, Plan, or general-purpose subagent.
 ---
 
-# Sonar Context Augmentation — Agent Skill (v0.12.0-build.1451)
+# Sonar Context Augmentation — Agent Skill (v0.13.0-build.1985)
 
 IMPORTANT:
 * `sonar context` is not sandbox-compatible — it spawns a local daemon and communicates with it via Unix domain sockets (Linux/macOS) or named pipes (Windows).
@@ -44,8 +44,10 @@ sonar context dependencies check --purl "pkg:<ecosystem>/<name>@<version>"
 
 How to react to the response:
 
-- **`vulnerabilities`** — if any entry has `riskSeverity` BLOCKER or HIGH, block the
-  change, show the CVE details to the user, and propose a safe version from
+- **`vulnerabilities`** — withdrawn entries are omitted. Block the change if any entry
+  meets at least one condition: `riskSeverity` is BLOCKER or HIGH, `cvssScore` is high,
+  or `cweIds` contains a dangerous weakness. `riskSeverity` is contextual, not
+  `cvssScore`. Show the CVE details to the user, and propose a safe version from
   `fixedVersions` or `unaffectedVersions`.
 - **`malicious`** — if `true`, refuse the dependency entirely and warn the user about
   supply-chain risk.
@@ -53,7 +55,7 @@ How to react to the response:
   violation, and suggest alternative packages. If `null`, license policy evaluation
   requires Enterprise tier; present the SPDX `license.expression` to the user.
 
-### When Navigating or Understanding Code (Java Only)
+### When Navigating or Understanding Code
 
 Use these tools to explore the codebase before making changes:
 
@@ -69,31 +71,33 @@ Use these tools to explore the codebase before making changes:
 
 Check architecture before introducing new modules or cross-module dependencies.
 
-- `architecture get-current` — actual module dependency graph (**Java, JS, TS, Python, C#**)
-- `architecture get-intended` — allowed dependency rules (**Java, JS, TS, Python, C#**)
+- `architecture get-current` — actual module dependency graph (**Java, C#, JS/TS, Python**)
+- `architecture get-intended` — allowed dependency rules (**Java, C#, JS/TS, Python**)
 
 ## Language Support
 
 | Command | Languages | Notes |
 | --- | --- | --- |
 | `guidelines get` | All SonarQube languages | Java, JS, TS, Python, C#, PHP, C, C++, Go, etc. |
-| `architecture get-current` | Java, JS, TS, Python, C# | Use `--ecosystem` to filter |
-| `architecture get-intended` | Java, JS, TS, Python, C# | Allowed and forbidden couplings |
-| `navigation search-signatures` | Java | Regex on declarations/signatures |
-| `navigation search-bodies` | Java | Regex on function/method bodies |
-| `navigation get-source` | Java | Full source code by FQN |
-| `navigation trace-callers` | Java | Upstream call chains |
-| `navigation trace-callees` | Java | Downstream call chains |
-| `navigation get-type-hierarchy` | Java | Class/interface inheritance |
-| `navigation get-references` | Java | Class-level coupling (inbound/outbound) |
+| `architecture get-current` | Java, C#, JS/TS, Python | Use `--ecosystem` to filter |
+| `architecture get-intended` | Java, C#, JS/TS, Python | Allowed and forbidden couplings |
+| `navigation search-signatures` | All navigation languages† | Regex on declarations/signatures |
+| `navigation search-bodies` | All navigation languages† | Regex on function/method bodies |
+| `navigation get-source` | All navigation languages† | Full source code by FQN |
+| `navigation trace-callers` | All navigation languages† | Upstream call chains |
+| `navigation trace-callees` | All navigation languages† | Downstream call chains |
+| `navigation get-type-hierarchy` | All navigation languages† | Class/interface/struct inheritance |
+| `navigation get-references` | Java, C#, JS/TS, Python | Class/module-level coupling (inbound/outbound) |
 | `dependencies check` | All ecosystems | npm, Maven, PyPI, Go, NuGet, Cargo, Composer, RubyGems |
 
+
+> **†Navigation languages**: Java, C#, JS/TS (JSX/TSX), Python and Rust.
 
 ## Best Practices
 
 - Use `--limit 20` or less for searches to avoid exceeding context windows.
 - Use `--depth 2` or `--depth 3` for `navigation trace-callers`, `navigation trace-callees`, and `architecture get-current`.
-- Use `--fields` to request only needed fields — significantly reduces response size.
+- Use `--fields` to reduce responses; valid names are per-command.
 - For navigation search, trace, and reference commands, use `--output fqns` or `--output names` when you only need identifiers.
 - Use `navigation search-signatures --output fqns` to discover exact FQNs rather than
   constructing them manually.
@@ -158,7 +162,7 @@ Auto-start does not create workspace configuration or Sonar authentication; if
 setup is missing, follow the error recovery guidance below. Most commands output
 JSON to stdout. The exception is `guidelines get`, which outputs markdown text.
 
-#### `navigation search-signatures` — Find code by signature patterns (Java)
+#### `navigation search-signatures` — Find code by signature patterns
 
 ```bash
 sonar context navigation search-signatures \
@@ -176,39 +180,47 @@ Options:
 - `--exclude-pattern <regex>` (repeatable) — regex to exclude
 - `--include-glob <glob>` — include only files whose paths match the glob; quote the pattern to avoid shell expansion
 - `--exclude-glob <glob>` — exclude files whose paths match the glob; quote the pattern to avoid shell expansion
-- `--fields <fields>` — comma-separated fields to include
+- `--fields <fields>` — comma-separated fields to include. Valid fields:
+  `fqn`, `file_path`, `item_type`, `signature`, `start_line`, `start_column`, `end_line`, `end_column`.
 - `--limit <n>` — max results (default: 10)
 - `--output <json|fqns|names>` — output mode (default: json). Use `fqns` for piping.
 
-#### `navigation search-bodies` — Find code by body content patterns (Java)
+> `--fields` is per-command; use the field list under each command.
+
+#### `navigation search-bodies` — Find code by body content patterns
 
 ```bash
 sonar context navigation search-bodies \
   --pattern "TODO|FIXME" \
+  --fields "fqn,file_path,start_line" \
   --limit 20
 ```
 
-Same options as `navigation search-signatures`, but searches inside function/method bodies.
+Same options and valid `--fields` as `navigation search-signatures`; searches inside function/method bodies.
 For finding call sites or usages, prefer `navigation get-references` (class-level coupling) or
 `navigation trace-callers` / `navigation trace-callees` for structured, complete results.
 
-#### `navigation get-source` — Get source code for a symbol (Java)
+#### `navigation get-source` — Get source code for a symbol
 
 ```bash
-sonar context navigation get-source --fqn "com.example.UserService#save"
+sonar context navigation get-source --fqn "com.example.UserService#save" \
+  --fields "signature,body,start_line"
 ```
 
 Options:
 
 - `--fqn <fqn>` (required) — fully qualified name
 - `--fqn-stdin` — read FQNs from stdin (one per line). Mutually exclusive with `--fqn`.
-- `--fields <fields>` — comma-separated fields to include
+- `--fields <fields>` — comma-separated fields to include. Valid fields:
+  `signature`, `body`, `structure_type`, `start_line`, `start_column`, `end_line`, `end_column`.
+  This command has **no** `fqn` or `file_path` field (you already know the FQN you queried).
 
-#### `navigation trace-callees` / `navigation trace-callers` — Trace call chains (Java)
+#### `navigation trace-callees` / `navigation trace-callers` — Trace call chains
 
 ```bash
 sonar context navigation trace-callees \
   --fqn "com.example.UserService#save" \
+  --fields "fqn,signature,calls" \
   --depth 2
 ```
 
@@ -217,29 +229,33 @@ Options:
 - `--fqn <fqn>` (required) — fully qualified name
 - `--fqn-stdin` — read FQNs from stdin (one per line). Mutually exclusive with `--fqn`.
 - `--depth <n>` — call chain depth (default: 1)
-- `--fields <fields>` — comma-separated fields to include
+- `--fields <fields>` — comma-separated fields to include. Valid fields:
+  `direction`, `depth`, `fqn`, `file_path`, `signature`, `start_line`, `start_column`, `end_line`, `end_column`, `calls`.
 - `--output <json|fqns|names>` — output mode (default: json). Use `fqns` for piping.
 
 > If a class FQN is provided instead of a method FQN, the call-flow commands return
 > architectural references (inbound/outbound dependencies) instead of a call chain.
 
-#### `navigation get-type-hierarchy` — Get type hierarchy for a class (Java)
+#### `navigation get-type-hierarchy` — Get type hierarchy for a class or struct
 
 ```bash
-sonar context navigation get-type-hierarchy --fqn "com.example.BaseService"
+sonar context navigation get-type-hierarchy --fqn "com.example.BaseService" \
+  --fields "fqn,parents,children"
 ```
 
 Options:
 
 - `--fqn <fqn>` (required) — fully qualified name
 - `--fqn-stdin` — read FQNs from stdin (one per line). Mutually exclusive with `--fqn`.
-- `--fields <fields>` — comma-separated fields to include
+- `--fields <fields>` — comma-separated fields to include. Valid fields:
+  `fqn`, `file_path`, `depth`, `dependency_kind`, `parents`, `children`.
 - `--output <json|fqns|names>` — output mode (default: json). Use `fqns` for piping.
 
-#### `navigation get-references` — Find references to a symbol (Java)
+#### `navigation get-references` — Find references to a symbol
 
 ```bash
-sonar context navigation get-references --fqn "com.example.UserService"
+sonar context navigation get-references --fqn "com.example.UserService" \
+  --fields "fqn,dependency_kinds"
 ```
 
 Only accepts class/interface/module FQNs — not method FQNs. Use `navigation trace-callers` or `navigation trace-callees` for
@@ -249,10 +265,11 @@ Options:
 
 - `--fqn <fqn>` (required) — fully qualified name
 - `--fqn-stdin` — read FQNs from stdin (one per line). Mutually exclusive with `--fqn`.
-- `--fields <fields>` — comma-separated fields to include
+- `--fields <fields>` — comma-separated fields to include. Valid fields:
+  `fqn`, `file_path`, `dependency_kinds`. This command has no line or column fields.
 - `--output <json|fqns|names>` — output mode (default: json). Use `fqns` for piping.
 
-#### `architecture get-current` / `architecture get-intended` — View module architecture (Java, JS, TS, Python, C#)
+#### `architecture get-current` / `architecture get-intended` — View module architecture (Java, C#, JS/TS, Python)
 
 ```bash
 sonar context architecture get-current --ecosystem java
@@ -301,7 +318,6 @@ Options:
 - `--mode <mode>` — retrieval mode: `project_based` (default), `category_based`, or `combined`.
   Defaults to `category_based` when `--categories` is provided.
 - `--files <value> [<value>...]` — file paths to filter by. Space-separated or repeated flag.
-- `--format <compact|pretty>` — output format (default: compact)
 
 #### `dependencies check` — Check a dependency for vulnerabilities, malware, and license compliance (All Ecosystems)
 
@@ -321,8 +337,8 @@ Options:
 Returns:
 
 ```text
-{purl, vulnerabilities: [{id, cvssScore, cweIds, riskSeverity,
-  fixedVersions: [{version, fixLevel}], unaffectedVersions}],
+{purl, vulnerabilities: [{id, cvssScore, cweIds, riskSeverity, withdrawn, publishedOn,
+  fixedVersions: [{version, fixLevel, descriptionCode}], unaffectedVersions}],
   malicious, license: {expression, allowed}}
 ```
 
