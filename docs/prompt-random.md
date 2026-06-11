@@ -34,39 +34,6 @@ Add a "Surprise me" endpoint that returns a random sanity check from the deck, w
    where `X` is the 1-based position of the picked check in the deck and `Y` is the total number of checks.
 5. The session counter used by `/` is not affected by hitting `/random`.
 6. Two consecutive calls to `/random` should (with high probability) return different checks.
-7. All other existing routes (`/`, `/admin/**`) remain unchanged.
-
----
-
-## Technical Design
-
-### Use Case
-
-Add a new use case `PickRandomSanityCheck` in the `application` package.
-
-- Inject a `RandomGenerator` so that tests can drive the random source with a fixed seed.
-- To keep the controller as a thin pass-through, the use case must return a **fully populated, view-ready result** containing both the sanity check ready to be displayed and the banner text.
-- For consistency with the existing home page, **reuse the `SanityCheckView` already used by `GuiController`** rather than introducing yet another mapping class.
-
-### Controller
-
-Add a `@Controller` in `infrastructure/controller`:
-
-- `GET /random` invokes the random pick use case.
-- The controller forwards the use case result to the Thymeleaf template without additional mapping.
-
-### View
-
-Reuse `templates/sanity-check.html`. Add a conditional block (Thymeleaf `th:if`) above the question:
-
-- If the banner attribute is present in the model, display it.
-- The home page (`/`) does not set this attribute, so the banner stays hidden there.
-
-### Architecture constraints
-
-- Follow the existing package structure: `domain`, `application`, `infrastructure`.
-- Do not modify the domain model or the `SanityCheckInventory` SPI.
-- All Sonar architecture rules must remain green.
 
 ---
 
@@ -79,4 +46,4 @@ Reuse `templates/sanity-check.html`. Add a conditional block (Thymeleaf `th:if`)
 - [ ] A unit test on the use case uses a seeded `RandomGenerator` to verify a deterministic pick
 - [ ] A `@WebMvcTest` covers the new endpoint
 - [ ] All existing tests still pass
-- [ ] Sonar quality gate is green, including architecture rules
+
