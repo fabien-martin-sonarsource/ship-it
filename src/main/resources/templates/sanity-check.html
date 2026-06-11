@@ -27,6 +27,9 @@
         </header>
 
         <div class="scenario">
+            <div th:if="${randomPick != null}" class="random-banner">
+                <span th:text="|🎲 Random pick — check ${randomPick.position} of ${randomPick.total}|"></span>
+            </div>
             <div>
                 <span class="eyebrow">Context</span>
                 <p class="context-text" th:text="${sanityCheck.context}"></p>

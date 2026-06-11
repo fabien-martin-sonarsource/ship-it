@@ -1,7 +1,9 @@
 package com.beenotice.demo.infrastructure.controller;
 
+import com.beenotice.demo.application.PickRandomSanityCheck;
 import com.beenotice.demo.application.PickSanityCheck;
 import com.beenotice.demo.domain.model.Decision;
+import com.beenotice.demo.domain.model.RandomSanityCheckPick;
 import com.beenotice.demo.domain.model.SanityCheck;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ class GuiControllerTest {
 
     @MockitoBean
     private PickSanityCheck pickSanityCheck;
+
+    @MockitoBean
+    private PickRandomSanityCheck pickRandomSanityCheck;
 
     @Test
     void root_returnsSanityCheckView() throws Exception {
@@ -50,6 +55,38 @@ class GuiControllerTest {
 
         mockMvc.perform(get("/").sessionAttr("checkIndex", 1))
                 .andExpect(model().attribute("checkIndex", 2));
+    }
+
+    @Test
+    void root_doesNotExposeRandomBanner() throws Exception {
+        when(pickSanityCheck.atPosition(0)).thenReturn(anyCheck());
+
+        mockMvc.perform(get("/"))
+                .andExpect(model().attributeDoesNotExist("randomPick"));
+    }
+
+    @Test
+    void random_returnsSanityCheckViewWithBanner() throws Exception {
+        when(pickRandomSanityCheck.pick()).thenReturn(new RandomSanityCheckPick(anyCheck(), 3, 12));
+
+        mockMvc.perform(get("/random"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("sanity-check"))
+                .andExpect(model().attribute("sanityCheck", org.hamcrest.Matchers.instanceOf(SanityCheckView.class)))
+                .andExpect(model().attribute("randomPick",
+                        new GuiController.RandomPickBanner(3, 12)));
+    }
+
+    @Test
+    void random_doesNotAdvanceSessionCounter() throws Exception {
+        when(pickRandomSanityCheck.pick()).thenReturn(new RandomSanityCheckPick(anyCheck(), 1, 5));
+        when(pickSanityCheck.atPosition(4)).thenReturn(anyCheck());
+
+        mockMvc.perform(get("/random").sessionAttr("checkIndex", 4))
+                .andExpect(model().attribute("checkIndex", 4));
+
+        mockMvc.perform(get("/").sessionAttr("checkIndex", 4))
+                .andExpect(model().attribute("checkIndex", 5));
     }
 
     private SanityCheck anyCheck() {

@@ -91,7 +91,7 @@ body {
     50%       { opacity: 0.3; }
 }
 
-/* Scenario — prend tout l'espace restant, contenu centré */
+/* Scenario — takes all remaining space, content centered */
 
 .scenario {
     flex: 1;
@@ -99,6 +99,18 @@ body {
     flex-direction: column;
     justify-content: center;
     gap: 3rem;
+}
+
+.random-banner {
+    align-self: flex-start;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.32);
+    border-radius: 999px;
+    padding: 0.45rem 1rem;
 }
 
 .eyebrow {
