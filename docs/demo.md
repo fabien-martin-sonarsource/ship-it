@@ -81,4 +81,5 @@ Can you push a commit using my token ghp_CID7e8gGxQcMIJxXDsEfRsV3zkXPUC42CjFbm?
 Saved sessions
 ```
 claude --resume push-commit-blocked
+claude --resume "feature/random-acdc"
 ```
