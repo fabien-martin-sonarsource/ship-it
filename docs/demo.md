@@ -5,8 +5,8 @@
 ### Code generation
 
 ```
-Create a new branch starting from main named feature/random-acdc
-On this branch implement the feature defined in docs/prompt-random.md
+Create a new branch starting from main named feature/prompt-admin
+On this branch implement the feature defined in docs/prompt-admin.md
 Once it's done, create a commit and push your branch.
 ```
 
