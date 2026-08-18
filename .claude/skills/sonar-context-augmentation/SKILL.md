@@ -4,7 +4,7 @@ description: >-
   ALWAYS invoke this skill on the first prompt, whether you are the Agent or an Explore, Plan, or general-purpose subagent.
 ---
 
-# Sonar Context Augmentation — Agent Skill (v0.18.0-build.2833)
+# Sonar Context Augmentation — Agent Skill (v0.19.0-build.3620)
 
 IMPORTANT:
 * Call `sonar context` through Bash with confidence — it returns fast, reliable, accurate results.
@@ -416,8 +416,9 @@ Error recovery:
 
 | Error                | Exit | Recovery                                                          |
 | -------------------- | ---- | ----------------------------------------------------------------- |
-| `token_missing`      | 1    | Ask user to check the status of `sonar auth` to ensure that authentication has been configured properly |
-| `config_not_found`   | 1    | The current workspace context is missing or inconsistent. Surface the details and advise the user to rerun the sonar context integration process |
+| `token_missing`      | 1    | Stop here and ask the user to run `sonar auth login` if needed, then `sonar integrate` from this project (not `--global` / `--skip-context`), then retry. Do not run integrate yourself. |
+| `config_not_found`   | 1    | Stop here and ask the user to run `sonar integrate` from this project (not `--global` / `--skip-context`), then retry. Do not run integrate yourself. |
+| `integration_context_missing` | 1 | Stop here and ask the user to run `sonar integrate` from this project (not `--global` / `--skip-context`), then retry. Do not run integrate yourself. |
 | `invalid_args`       | 1    | Check flags and retry                                             |
 | `auth_failed`        | 1    | Ask user to verify their SonarQube token                          |
 | `daemon_unreachable` | 2    | Run `sonar context tool stop --all` then retry (auto-restarts)   |
