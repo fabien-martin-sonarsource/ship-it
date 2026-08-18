@@ -13,6 +13,7 @@ The "Ship It?" application serves sanity checks one at a time through the public
 ## Goal
 
 Add a "Surprise me" endpoint that returns a random sanity check from the deck, with a small banner indicating that the check was picked at random and where it sits in the full deck.
+Integrate an external library to run the random function to rely on good crypto solution.
 
 ## Non-Goals
 
