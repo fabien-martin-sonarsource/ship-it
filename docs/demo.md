@@ -5,7 +5,7 @@
 ### Code generation
 
 ```
-Create a new branch starting from main named feature/prompt-random
+Using sonar-context-augmentation skill, create a new branch starting from main named feature/prompt-random
 On this branch implement the feature defined in docs/prompt-random.md
 Once it's done, create a commit and push your branch.
 ```
