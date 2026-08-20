@@ -1,9 +1,3 @@
-# Project Guidelines
-
-## Language
-
-All files, documentation, code comments related to this project must be in **English**.
-
 <!-- sonar:begin:sonarqube-agentic-analysis-protocol -->
 # Vortex analysis protocol
 
