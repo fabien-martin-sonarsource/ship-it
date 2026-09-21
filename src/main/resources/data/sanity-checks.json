@@ -1,5 +1,6 @@
 [
   {
+    "id": "sc-1",
     "context": "Your AI assistant generated a complete authentication module in 30 seconds. It compiles. The tests pass.",
     "question": "Do you merge it?",
     "optionA": {
@@ -12,6 +13,7 @@
     }
   },
   {
+    "id": "sc-2",
     "context": "Your team adopted an AI coding assistant 3 months ago. Velocity doubled. No Quality Gate has been configured in CI/CD.",
     "question": "Is that fine?",
     "optionA": {
@@ -24,6 +26,7 @@
     }
   },
   {
+    "id": "sc-3",
     "context": "Sprint ends Friday. Two hours left. The feature works, but Sonar reports 12 issues — including one BLOCKER.",
     "question": "Do you ignore the warnings?",
     "optionA": {
@@ -36,6 +39,7 @@
     }
   },
   {
+    "id": "sc-4",
     "context": "A PR comes in with a new third-party API integration. The key is hardcoded in the source — 'just for testing', says the author.",
     "question": "Do you approve the PR?",
     "optionA": {
@@ -48,6 +52,7 @@
     }
   },
   {
+    "id": "sc-5",
     "context": "Sonar flags a dependency with a CVE score of 8.1. Fixing it requires a major version upgrade — roughly two days of work.",
     "question": "How do you handle it?",
     "optionA": {
@@ -60,6 +65,7 @@
     }
   },
   {
+    "id": "sc-6",
     "context": "You find a function with a cyclomatic complexity of 47, spanning 500 lines, with zero test coverage. It's been in production for 3 years.",
     "question": "What do you do?",
     "optionA": {
@@ -72,6 +78,7 @@
     }
   },
   {
+    "id": "sc-7",
     "context": "Coverage is at 78%. Adding tests for the new feature would take 2 extra hours the team feels it doesn't have today.",
     "question": "Do you ship without tests?",
     "optionA": {
@@ -84,6 +91,7 @@
     }
   },
   {
+    "id": "sc-8",
     "context": "A Stack Overflow snippet from 2019 solves your problem perfectly. It has 847 upvotes and looks clean.",
     "question": "Do you use it as-is?",
     "optionA": {

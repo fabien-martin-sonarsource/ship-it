@@ -9,20 +9,30 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class InMemorySanityCheckInventory implements SanityCheckInventory {
 
-    private final List<SanityCheck> sanityChecks;
+    private final Map<String, SanityCheck> sanityChecks = new LinkedHashMap<>();
 
     public InMemorySanityCheckInventory(@Value("${app.sanity-checks-path}") Resource resource) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        this.sanityChecks = mapper.readValue(resource.getInputStream(), new TypeReference<List<SanityCheck>>() {});
+        List<SanityCheck> initial = mapper.readValue(resource.getInputStream(), new TypeReference<List<SanityCheck>>() {});
+        merge(initial);
     }
 
     @Override
-    public List<SanityCheck> findAll() {
-        return sanityChecks;
+    public synchronized List<SanityCheck> findAll() {
+        return List.copyOf(sanityChecks.values());
+    }
+
+    @Override
+    public synchronized void merge(List<SanityCheck> scenarios) {
+        for (SanityCheck scenario : scenarios) {
+            sanityChecks.put(scenario.id(), scenario);
+        }
     }
 }

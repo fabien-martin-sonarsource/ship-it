@@ -48,6 +48,6 @@ class SanityCheckDeckTest {
     }
 
     private SanityCheck check(String name) {
-        return new SanityCheck(name, "question?", new Decision("A", "consequence A"), new Decision("B", "consequence B"));
+        return new SanityCheck(name, name, "question?", new Decision("A", "consequence A"), new Decision("B", "consequence B"));
     }
 }

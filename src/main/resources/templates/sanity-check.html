@@ -36,6 +36,19 @@
                 <p class="question-text" th:text="${sanityCheck.question}"></p>
             </div>
         </div>
+
+        <div class="import-banner import-banner-success" th:if="${importMessage}">
+            <p th:text="${importMessage}"></p>
+        </div>
+        <div class="import-banner import-banner-error" th:if="${importError}">
+            <p th:text="${importError}"></p>
+        </div>
+
+        <form class="import-form" th:action="@{/import}" method="post" enctype="multipart/form-data">
+            <label class="eyebrow" for="file">Import scenarios (YAML)</label>
+            <input type="file" id="file" name="file" accept=".yml,.yaml" required="required">
+            <button type="submit">Import</button>
+        </form>
     </aside>
 
     <div class="panel-right">
