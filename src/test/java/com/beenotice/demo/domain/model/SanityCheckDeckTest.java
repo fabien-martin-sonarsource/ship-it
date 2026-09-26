@@ -47,6 +47,20 @@ class SanityCheckDeckTest {
                 .hasMessageContaining("empty");
     }
 
+    @Test
+    void pickRandom_returnsCheckAtGeneratedIndexWithOneBasedPosition() {
+        SanityCheck first = check("first");
+        SanityCheck second = check("second");
+        SanityCheck third = check("third");
+        SanityCheckDeck deck = new SanityCheckDeck(List.of(first, second, third));
+
+        SanityCheckPick pick = deck.pickRandom(bound -> 1);
+
+        assertThat(pick.check()).isEqualTo(second);
+        assertThat(pick.position()).isEqualTo(2);
+        assertThat(pick.total()).isEqualTo(3);
+    }
+
     private SanityCheck check(String name) {
         return new SanityCheck(name, "question?", new Decision("A", "consequence A"), new Decision("B", "consequence B"));
     }
