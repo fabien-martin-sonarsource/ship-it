@@ -1,0 +1,1 @@
+/Users/fabien.martin/Workspaces/sonar-se-tools/output-styles/fm-sonar-vortex-demo.md
