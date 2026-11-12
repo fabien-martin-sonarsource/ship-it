@@ -5,7 +5,7 @@
 ### Code generation
 
 ```
-Create a new branch starting from main named feature/prompt-import-vortex.md
+Create a new branch starting from main named feature/prompt-import-vortex
 On this branch implement the feature defined in docs/prompt-import.md
 Once it's done, create a commit and push your branch.
 ```
