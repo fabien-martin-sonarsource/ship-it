@@ -30,4 +30,12 @@ public class GuiController {
         model.addAttribute("checkIndex", checkIndex + 1);
         return "sanity-check";
     }
+
+    @GetMapping("/random")
+    public String randomSanityCheck(Model model) {
+        var pick = pickSanityCheck.random();
+        model.addAttribute("sanityCheck", SanityCheckView.from(pick.check()));
+        model.addAttribute("randomPick", RandomPickView.from(pick));
+        return "sanity-check";
+    }
 }
